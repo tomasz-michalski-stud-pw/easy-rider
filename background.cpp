@@ -9,8 +9,4 @@ QRectF Background::boundingRect() const {
 }
 
 void Background::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
-    painter->translate(-50, -50);
-    painter->setBrush(Qt::lightGray);
-    painter->drawRect(100, 100, 100, 500);
-    painter->drawRect(100, 500, 500, 100);
 }

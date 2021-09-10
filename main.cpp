@@ -13,6 +13,7 @@
 #include "background.h"
 #include "board.h"
 #include "car.h"
+#include "road_tile.h"
 
 
 // TODO: read from file?
@@ -36,20 +37,32 @@ int main(int argc, char **argv) {
     Board board(board_str);
 
     std::cout << "Board: \n";
-    for (int i = 0; i < board.getHeight(); i++) {
-        for (int j = 0; j < board.getWidth(); j++) {
-            std::cout << board.getTile(j, i);
+    for (int y = 0; y < board.getHeight(); y++) {
+        for (int x = 0; x < board.getWidth(); x++) {
+            std::cout << board.getTile(x, y);
         }
         std::cout << "\n";
     }
 
     QGraphicsScene scene;
-    scene.setSceneRect(0, 0, 1500, 700);
+    scene.setSceneRect(0, 0, 2100, 1100);
     scene.setItemIndexMethod(QGraphicsScene::NoIndex);
 
     Background background;
     background.setPos(0, 0);
     scene.addItem(&background);
+
+    for (int y = 0; y < board.getHeight(); y++) {
+        for (int x = 0; x < board.getWidth(); x++) {
+            Board::Tile tile = board.getTile(x, y);
+            if (tile == Board::Tile::ROAD) {
+                RoadTile *roadTile = new RoadTile();
+                roadTile->setParentItem(&background);
+                roadTile->setPos(x * 100, y * 100);
+            }
+        }
+    }
+
 
     Car car;
     car.setPos(100, 100);
@@ -64,7 +77,7 @@ int main(int argc, char **argv) {
 
     view.setWindowTitle(QT_TRANSLATE_NOOP(QGraphicsView, "Easy Rider"));
     view.resize(1600, 800);
-    view.scale(1, 1);
+    view.scale(0.5, 0.5);
     view.show();
 
     QTimer timer;

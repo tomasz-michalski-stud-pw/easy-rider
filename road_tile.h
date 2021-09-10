@@ -1,10 +1,10 @@
-#ifndef EASY_RIDER_BACKGROUND_H
-#define EASY_RIDER_BACKGROUND_H
+#ifndef EASY_RIDER_ROAD_TILE_H
+#define EASY_RIDER_ROAD_TILE_H
 
 #include <QGraphicsItem>
 
 
-class Background : public QGraphicsItem {
+class RoadTile : public QGraphicsItem {
 public:
     QRectF boundingRect() const override;
 
@@ -12,4 +12,5 @@ public:
                QWidget *widget) override;
 };
 
-#endif //EASY_RIDER_BACKGROUND_H
+
+#endif //EASY_RIDER_ROAD_TILE_H
