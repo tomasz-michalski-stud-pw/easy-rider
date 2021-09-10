@@ -7,14 +7,41 @@
 #include <QtMath>
 #include <QtWidgets>
 #include <QGraphicsItem>
-#include <sstream>
+
+#include <iostream>
 
 #include "background.h"
+#include "board.h"
 #include "car.h"
+
+
+// TODO: read from file?
+const std::string board_str = R"(
+.....R..............
+.....R......R.......
+RRRRRRRRRRRRRRRRRRRR
+.....R......R.......
+.....R......R.......
+.....R......R.......
+.....RRRRRRRRRRRRRRR
+.....R..........R...
+RRRRRR..........R...
+.....R..........R...
+)";
 
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
+
+    Board board(board_str);
+
+    std::cout << "Board: \n";
+    for (int i = 0; i < board.getHeight(); i++) {
+        for (int j = 0; j < board.getWidth(); j++) {
+            std::cout << board.getTile(j, i);
+        }
+        std::cout << "\n";
+    }
 
     QGraphicsScene scene;
     scene.setSceneRect(0, 0, 1500, 700);
