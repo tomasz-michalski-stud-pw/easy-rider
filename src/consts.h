@@ -20,7 +20,7 @@ const int SLEEP = 1000 / 5;
 /**
  * Defines maximal number of cars that can be present on the board at the same time.
  */
-const int CARS_COUNT = 15;
+const int CARS_COUNT = 25;
 
 /**
  * Defines how likely it is that the car will be created after spawner attempts to do so. Setting to "1" will result in

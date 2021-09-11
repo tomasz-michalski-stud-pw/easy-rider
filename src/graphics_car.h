@@ -55,6 +55,7 @@ private:
     QPoint currentBoardPos;
     Direction currentDirection = UNKNOWN;
     bool justChangedDirection = false;
+    QColor color;
 };
 
 #endif //EASY_RIDER_GRAPHICS_CAR_H

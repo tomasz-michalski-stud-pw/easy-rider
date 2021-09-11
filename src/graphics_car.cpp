@@ -13,6 +13,7 @@
 
 GraphicsCar::GraphicsCar(Board &board, QPoint boardPos) : board(board), currentBoardPos(boardPos) {
     hide(); // hide car until first move because it may be initially blocked at spawn point
+    color.setHsvF(QRandomGenerator::global()->generateDouble(), 0.9, 0.9);
     advance(1);
 }
 
@@ -22,28 +23,34 @@ QRectF GraphicsCar::boundingRect() const {
 }
 
 void GraphicsCar::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
-    qreal height = 90;
-    qreal width = 50;
+    qreal height = 75;
+    qreal width = 45;
 
-    painter->setBrush(Qt::red);
+    // body
+    painter->setBrush(color);
     painter->drawRoundedRect(-width / 2, -height / 2, width, height, 10, 10);
 
-    painter->setBrush(Qt::yellow);
-    painter->drawRoundedRect((-width / 2) - (12 / 2) + 12, -height / 2 + 5, 12, 6, 2, 2);
-    painter->drawRoundedRect((width / 2) - (12 / 2) - 12, -height / 2 + 5, 12, 6, 2, 2);
+    // windows
+    painter->setBrush(QColor(150, 220, 200));
+    painter->drawPolygon(QPolygonF()
+                                 << QPoint(-width / 2 + 7, -15)
+                                 << QPoint(width / 2 - 7, -15)
+                                 << QPoint(width / 2 - 10, -2)
+                                 << QPoint(-width / 2 + 10, -2)
+    );
+    painter->drawPolygon(QPolygonF()
+                                 << QPoint(width / 2 - 10, 12)
+                                 << QPoint(-width / 2 + 10, 12)
+                                 << QPoint(-width / 2 + 7, 25)
+                                 << QPoint(width / 2 - 7, 25)
+    );
 
-    painter->drawPolygon(QPolygonF()
-                                 << QPoint(-width / 2 + 6, -20)
-                                 << QPoint(width / 2 - 6, -20)
-                                 << QPoint(width / 2 - 10, -5)
-                                 << QPoint(-width / 2 + 10, -5)
-    );
-    painter->drawPolygon(QPolygonF()
-                                 << QPoint(width / 2 - 10, 20)
-                                 << QPoint(-width / 2 + 10, 20)
-                                 << QPoint(-width / 2 + 6, 35)
-                                 << QPoint(width / 2 - 6, 35)
-    );
+
+    // lights
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor(190, 150, 20));
+    painter->drawRoundedRect((-width / 2) - (12 / 2) + 12, -height / 2 + 5, 12, 8, 2, 2);
+    painter->drawRoundedRect((width / 2) - (12 / 2) - 12, -height / 2 + 5, 12, 8, 2, 2);
 }
 
 
