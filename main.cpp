@@ -15,6 +15,9 @@
 #include "consts.h"
 
 
+/**
+ * Defines string used to construct simulation board.
+ */
 const std::string board_str = R"(
 ......s................
 ......v^.....^.........
@@ -35,6 +38,9 @@ s>>>>>v>........v^.....
 )";
 
 
+/**
+ * Main entrypoint for the application.
+ */
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
 
