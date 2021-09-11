@@ -5,6 +5,7 @@
 
 #include "board.h"
 
+
 class Car : public QGraphicsItem {
 public:
     enum Direction {
@@ -17,7 +18,7 @@ public:
 
     const Direction allDirections[4] = {UP, RIGHT, DOWN, LEFT};
 
-    Car(Board board);
+    Car(Board &board, QPoint boardPos);
 
     QRectF boundingRect() const override;
 
@@ -28,7 +29,7 @@ protected:
     void advance(int step) override;
 
 private:
-    Board board;
+    Board &board;
     QPoint boardPos;
     Direction currentDirection = UNKNOWN;
 };

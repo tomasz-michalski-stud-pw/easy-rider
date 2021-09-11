@@ -17,6 +17,7 @@ public:
         ROAD_RIGHT,
         ROAD_DOWN,
         ROAD_LEFT,
+        SPAWNER,
     };
 
     Board(std::string str);
@@ -29,10 +30,17 @@ public:
 
     Tile getTile(QPoint point);
 
+    void increaseCarsCount();
+
+    void decreaseCarsCount();
+
+    int getCarsCount();
+
 private:
     std::vector <Tile> tiles;
     int width = 0;
     int height = 0;
+    int carsCount = 0;
 };
 
 

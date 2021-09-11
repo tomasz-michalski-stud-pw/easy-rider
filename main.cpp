@@ -14,20 +14,23 @@
 #include "board.h"
 #include "car.h"
 #include "road_tile.h"
+#include "spawner_tile.h"
 
 
 // TODO: read from file?
 const std::string board_str = R"(
-.....v^.....^.......
-.....v^.....^.......
-<<<<<<^<<<<<^<<<<<<<
->>>>>v>>>>>>>>>>>>>>
-.....v^.....^.......
-.....v^.....^.......
-.....v^>>>>>^>>v>>>>
-<<<<<<^........v^...
->>>>>v^........v^...
-.....v^........v^...
+......s...............
+......v^.....^........
+......v^.....^........
+.<<<<<<^<<<<<^<<<<<<<s
+s>>>>>v>>>>>>>>>>>>>>.
+......v^.....^........
+......v^.....^........
+......v^>>>>>^>>v>>>>.
+.<<<<<<^........v^....
+s>>>>>v^........v^....
+......v^........v^....
+.......s.........s....
 )";
 
 
@@ -54,21 +57,21 @@ int main(int argc, char **argv) {
 
     for (int y = 0; y < board.getHeight(); y++) {
         for (int x = 0; x < board.getWidth(); x++) {
+            auto boardPos = QPoint(x, y);
             Board::Tile tile = board.getTile(x, y);
             if (tile == Board::Tile::ROAD_UP
                 || tile == Board::Tile::ROAD_RIGHT
                 || tile == Board::Tile::ROAD_DOWN
                 || tile == Board::Tile::ROAD_LEFT) {
-                RoadTile *roadTile = new RoadTile();
+                RoadTile *roadTile = new RoadTile(board, boardPos);
                 roadTile->setParentItem(&background);
-                roadTile->setPos(x * 100, y * 100);
+            }
+            if (tile == Board::Tile::SPAWNER) {
+                SpawnerTile *spawnerTile = new SpawnerTile(board, boardPos);
+                spawnerTile->setParentItem(&background);
             }
         }
     }
-
-
-    Car car(board);
-    scene.addItem(&car);
 
     QGraphicsView view(&scene);
     view.setRenderHint(QPainter::Antialiasing);

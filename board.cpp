@@ -8,6 +8,7 @@ std::map<char, Board::Tile> tiles_map{
         {'>', Board::Tile::ROAD_RIGHT},
         {'<', Board::Tile::ROAD_LEFT},
         {'v', Board::Tile::ROAD_DOWN},
+        {'s', Board::Tile::SPAWNER},
         {'.', Board::Tile::EMPTY},
 };
 
@@ -63,6 +64,18 @@ Board::Tile Board::getTile(int x, int y) {
 
 Board::Tile Board::getTile(QPoint point) {
     return getTile(point.x(), point.y());
+}
+
+void Board::increaseCarsCount() {
+    carsCount++;
+}
+
+void Board::decreaseCarsCount() {
+    carsCount--;
+}
+
+int Board::getCarsCount() {
+    return carsCount;
 }
 
 

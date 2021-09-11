@@ -1,5 +1,6 @@
 #include "car.h"
 
+#include <QGraphicsScene>
 #include <QPainter>
 #include <QRandomGenerator>
 
@@ -95,7 +96,6 @@ qreal direction_to_rotation(Car::Direction direction) {
         case Car::Direction::LEFT:
             return 270;
         default:
-            printf("WARNING: unknown direction\n");
             return QRandomGenerator::global()->bounded(12)*30;
     }
 }
@@ -120,8 +120,12 @@ void Car::advance(int step) {
 
     // "pushing" from the current road
     {
-        Car::Direction tile_direction = direction_from_road_tile(board.getTile(boardPos));
-        new_directions.insert(tile_direction);
+        Car::Direction possible_direction = direction_from_road_tile(board.getTile(boardPos));
+        auto possible_tile = board.getTile(boardPos + direction_to_point(possible_direction));
+        Car::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
+        if (possible_tile_direction != Car::Direction::UNKNOWN) {
+            new_directions.insert(possible_direction);
+        }
     }
 
     if (new_directions.size() > 0) {
@@ -130,18 +134,18 @@ void Car::advance(int step) {
         std::advance(it, QRandomGenerator::global()->bounded(new_directions.size()));
         currentDirection = *it;
     } else {
-        currentDirection = UNKNOWN;
+        // car is stuck, despawn it
+        hide();
+        scene()->removeItem(this);
+        board.decreaseCarsCount();
     }
 
     setRotation(direction_to_rotation(currentDirection));
-    boardPos = boardPos + direction_to_point(currentDirection);
+    boardPos += direction_to_point(currentDirection);
     setPos(boardPos * 100);
 }
 
 
-Car::Car(Board board) : board(board) {
-    // TODO: make it random
-    boardPos.setX(6);
-    boardPos.setY(8);
-    currentDirection = Direction::UP;
+Car::Car(Board &board, QPoint boardPos) : board(board), boardPos(boardPos) {
+    advance(1);
 }

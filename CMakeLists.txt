@@ -11,7 +11,15 @@ set(QT_VERSION 6)
 set(REQUIRED_LIBS Core Gui Widgets)
 set(REQUIRED_LIBS_QUALIFIED Qt6::Core Qt6::Gui Qt6::Widgets)
 
-add_executable(${PROJECT_NAME} main.cpp background.cpp background.h car.cpp car.h board.cpp board.h road_tile.cpp road_tile.h)
+add_executable(
+        ${PROJECT_NAME}
+        main.cpp
+        background.cpp background.h
+        car.cpp car.h
+        board.cpp board.h
+        road_tile.cpp road_tile.h
+        spawner_tile.cpp spawner_tile.h
+)
 
 
 if (NOT CMAKE_PREFIX_PATH)
