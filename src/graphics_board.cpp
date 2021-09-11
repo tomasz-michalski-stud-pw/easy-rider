@@ -1,20 +1,13 @@
-#include "background.h"
+#include "graphics_board.h"
 
 #include <QPainter>
 
-#include "car.h"
-#include "road_tile.h"
-#include "spawner_tile.h"
+#include "graphics_car.h"
+#include "graphics_road.h"
+#include "graphics_spawner.h"
 
 
-QRectF Background::boundingRect() const {
-    return QRectF(0, 0, 0, 0);
-}
-
-void Background::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
-}
-
-Background::Background(Board &board) : board(board) {
+GraphicsBoard::GraphicsBoard(Board &board) : board(board) {
     for (int y = 0; y < board.getHeight(); y++) {
         for (int x = 0; x < board.getWidth(); x++) {
             auto boardPos = QPoint(x, y);
@@ -23,13 +16,20 @@ Background::Background(Board &board) : board(board) {
                 || tile == Board::Tile::ROAD_RIGHT
                 || tile == Board::Tile::ROAD_DOWN
                 || tile == Board::Tile::ROAD_LEFT) {
-                RoadTile *roadTile = new RoadTile(board, boardPos);
+                GraphicsRoad *roadTile = new GraphicsRoad(board, boardPos);
                 roadTile->setParentItem(this);
             }
             if (tile == Board::Tile::SPAWNER) {
-                SpawnerTile *spawnerTile = new SpawnerTile(board, boardPos);
+                GraphicsSpawner *spawnerTile = new GraphicsSpawner(board, boardPos);
                 spawnerTile->setParentItem(this);
             }
         }
     }
+}
+
+QRectF GraphicsBoard::boundingRect() const {
+    return QRectF(0, 0, 0, 0);
+}
+
+void GraphicsBoard::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
 }

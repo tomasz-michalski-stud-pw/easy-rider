@@ -1,5 +1,5 @@
-#ifndef EASY_RIDER_BACKGROUND_H
-#define EASY_RIDER_BACKGROUND_H
+#ifndef EASY_RIDER_GRAPHICS_SPAWNER_H
+#define EASY_RIDER_GRAPHICS_SPAWNER_H
 
 #include <QGraphicsItem>
 
@@ -7,16 +7,17 @@
 
 
 /**
- * Graphic object responsible for displaying background based on the given Board.
+ * Graphic object responsible for creating new cars at its position, when needed.
  */
-class Background : public QGraphicsItem {
+class GraphicsSpawner : public QGraphicsItem {
 public:
     /**
-     * Creates Background object.
+     * Creates GraphicsSpawner object.
      *
      * @param board The Board which should be used as the source of data.
+     * @param boardPos Position of the tile on the board.
      */
-    Background(Board &board);
+    GraphicsSpawner(Board &board, QPoint boardPos);
 
     /**
      * Used by Qt. Defines an area in which painting will take place.
@@ -33,8 +34,12 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
 
+protected:
+    void advance(int step) override;
+
 private:
     Board &board;
+    QPoint boardPos;
 };
 
-#endif //EASY_RIDER_BACKGROUND_H
+#endif //EASY_RIDER_GRAPHICS_SPAWNER_H

@@ -13,13 +13,13 @@ set(REQUIRED_LIBS_QUALIFIED Qt6::Core Qt6::Gui Qt6::Widgets)
 
 add_executable(
         ${PROJECT_NAME}
-        main.cpp
-        background.cpp background.h
-        car.cpp car.h
-        board.cpp board.h
-        road_tile.cpp road_tile.h
-        spawner_tile.cpp spawner_tile.h
-        consts.h
+        src/main.cpp
+        src/board.cpp src/board.h
+        src/consts.h
+        src/graphics_board.cpp src/graphics_board.h
+        src/graphics_car.cpp src/graphics_car.h
+        src/graphics_road.cpp src/graphics_road.h
+        src/graphics_spawner.cpp src/graphics_spawner.h
 )
 
 

@@ -1,4 +1,4 @@
-#include "car.h"
+#include "graphics_car.h"
 
 #include <QGraphicsItemAnimation>
 #include <QGraphicsScene>
@@ -11,11 +11,17 @@
 #include "consts.h"
 
 
-QRectF Car::boundingRect() const {
+GraphicsCar::GraphicsCar(Board &board, QPoint boardPos) : board(board), currentBoardPos(boardPos) {
+    hide(); // hide car until first move because it may be initially blocked at spawn point
+    advance(1);
+}
+
+
+QRectF GraphicsCar::boundingRect() const {
     return QRectF(TILE_OFFSET, TILE_OFFSET, TILE_SIZE, TILE_SIZE);
 }
 
-void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
+void GraphicsCar::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
     qreal height = 90;
     qreal width = 50;
 
@@ -41,47 +47,47 @@ void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) 
 }
 
 
-Car::Direction direction_from_road_tile(Board::Tile tile) {
+GraphicsCar::Direction direction_from_road_tile(Board::Tile tile) {
     switch (tile) {
         case Board::Tile::ROAD_UP:
-            return Car::Direction::UP;
+            return GraphicsCar::Direction::UP;
         case Board::Tile::ROAD_RIGHT:
-            return Car::Direction::RIGHT;
+            return GraphicsCar::Direction::RIGHT;
         case Board::Tile::ROAD_DOWN:
-            return Car::Direction::DOWN;
+            return GraphicsCar::Direction::DOWN;
         case Board::Tile::ROAD_LEFT:
-            return Car::Direction::LEFT;
+            return GraphicsCar::Direction::LEFT;
         default:
-            return Car::Direction::UNKNOWN;
+            return GraphicsCar::Direction::UNKNOWN;
     }
 }
 
 
-bool is_direction_opposite(Car::Direction a, Car::Direction b) {
+bool is_direction_opposite(GraphicsCar::Direction a, GraphicsCar::Direction b) {
     switch (a) {
-        case Car::Direction::UP:
-            return b == Car::Direction::DOWN;
-        case Car::Direction::RIGHT:
-            return b == Car::Direction::LEFT;
-        case Car::Direction::DOWN:
-            return b == Car::Direction::UP;
-        case Car::Direction::LEFT:
-            return b == Car::Direction::RIGHT;
+        case GraphicsCar::Direction::UP:
+            return b == GraphicsCar::Direction::DOWN;
+        case GraphicsCar::Direction::RIGHT:
+            return b == GraphicsCar::Direction::LEFT;
+        case GraphicsCar::Direction::DOWN:
+            return b == GraphicsCar::Direction::UP;
+        case GraphicsCar::Direction::LEFT:
+            return b == GraphicsCar::Direction::RIGHT;
         default:
             return false;
     }
 }
 
 
-QPoint direction_to_point(Car::Direction direction) {
+QPoint direction_to_point(GraphicsCar::Direction direction) {
     switch (direction) {
-        case Car::Direction::UP:
+        case GraphicsCar::Direction::UP:
             return QPoint(0, -1);
-        case Car::Direction::RIGHT:
+        case GraphicsCar::Direction::RIGHT:
             return QPoint(1, 0);
-        case Car::Direction::DOWN:
+        case GraphicsCar::Direction::DOWN:
             return QPoint(0, 1);
-        case Car::Direction::LEFT:
+        case GraphicsCar::Direction::LEFT:
             return QPoint(-1, 0);
         default:
             return QPoint(0, 0);
@@ -89,15 +95,15 @@ QPoint direction_to_point(Car::Direction direction) {
 }
 
 
-qreal direction_to_rotation(Car::Direction direction) {
+qreal direction_to_rotation(GraphicsCar::Direction direction) {
     switch (direction) {
-        case Car::Direction::UP:
+        case GraphicsCar::Direction::UP:
             return 360;
-        case Car::Direction::RIGHT:
+        case GraphicsCar::Direction::RIGHT:
             return 90;
-        case Car::Direction::DOWN:
+        case GraphicsCar::Direction::DOWN:
             return 180;
-        case Car::Direction::LEFT:
+        case GraphicsCar::Direction::LEFT:
             return 270;
         default:
             return QRandomGenerator::global()->bounded(12) * 30;
@@ -105,7 +111,7 @@ qreal direction_to_rotation(Car::Direction direction) {
 }
 
 
-void Car::advance(int step) {
+void GraphicsCar::advance(int step) {
     if (!step)
         return;
 
@@ -118,20 +124,20 @@ void Car::advance(int step) {
         // "pulling" to the new road tile nearby which will allow to travel further
         for (auto possible_direction : allDirections) {
             auto possible_tile = board.getTile(currentBoardPos + direction_to_point(possible_direction));
-            Car::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
+            GraphicsCar::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
             if (possible_direction == possible_tile_direction
                 && !is_direction_opposite(currentDirection, possible_direction)
-                && possible_tile_direction != Car::Direction::UNKNOWN) {
+                && possible_tile_direction != GraphicsCar::Direction::UNKNOWN) {
                 new_directions.insert(possible_direction);
             }
         }
 
         // "pushing" from the current road
         {
-            Car::Direction possible_direction = direction_from_road_tile(board.getTile(currentBoardPos));
+            GraphicsCar::Direction possible_direction = direction_from_road_tile(board.getTile(currentBoardPos));
             auto possible_tile = board.getTile(currentBoardPos + direction_to_point(possible_direction));
-            Car::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
-            if (possible_tile_direction != Car::Direction::UNKNOWN) {
+            GraphicsCar::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
+            if (possible_tile_direction != GraphicsCar::Direction::UNKNOWN) {
                 new_directions.insert(possible_direction);
             }
         }
@@ -174,10 +180,4 @@ void Car::advance(int step) {
     animation->setRotationAt(0, direction_to_rotation(oldDirection));
     animation->setRotationAt(1, direction_to_rotation(currentDirection));
     timer->start();
-}
-
-
-Car::Car(Board &board, QPoint boardPos) : board(board), currentBoardPos(boardPos) {
-    hide(); // hide car until first move because it may be initially blocked at spawn point
-    advance(1);
 }

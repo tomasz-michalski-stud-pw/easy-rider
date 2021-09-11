@@ -1,5 +1,5 @@
-#ifndef EASY_RIDER_ROAD_TILE_H
-#define EASY_RIDER_ROAD_TILE_H
+#ifndef EASY_RIDER_GRAPHICS_ROAD_H
+#define EASY_RIDER_GRAPHICS_ROAD_H
 
 #include <QGraphicsItem>
 
@@ -9,15 +9,15 @@
 /**
  * Graphic object responsible for displaying single tile representing part of a road.
  */
-class RoadTile : public QGraphicsItem {
+class GraphicsRoad : public QGraphicsItem {
 public:
     /**
-     * Creates RoadTile object.
+     * Creates GraphicsRoad object.
      *
      * @param board The Board which should be used as the source of data.
      * @param boardPos Position of the tile on the board.
      */
-    RoadTile(Board &board, QPoint boardPos);
+    GraphicsRoad(Board &board, QPoint boardPos);
 
     /**
      * Used by Qt. Defines an area in which painting will take place.
@@ -39,4 +39,4 @@ protected:
     QPoint boardPos;
 };
 
-#endif //EASY_RIDER_ROAD_TILE_H
+#endif //EASY_RIDER_GRAPHICS_ROAD_H

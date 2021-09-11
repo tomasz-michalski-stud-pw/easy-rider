@@ -10,9 +10,9 @@
 
 #include <iostream>
 
-#include "background.h"
 #include "board.h"
 #include "consts.h"
+#include "graphics_board.h"
 
 
 /**
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
             2 * TILE_SIZE - TILE_OFFSET, 2 * TILE_SIZE - TILE_OFFSET,
             (board.getWidth() - 4) * TILE_SIZE, (board.getHeight() - 4) * TILE_SIZE);
     scene.setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene.addItem(new Background(board));
+    scene.addItem(new GraphicsBoard(board));
 
     QGraphicsView view(&scene);
     view.setRenderHint(QPainter::Antialiasing);

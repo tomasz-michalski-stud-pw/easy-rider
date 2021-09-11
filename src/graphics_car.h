@@ -1,12 +1,12 @@
-#ifndef EASY_RIDER_CAR_H
-#define EASY_RIDER_CAR_H
+#ifndef EASY_RIDER_GRAPHICS_CAR_H
+#define EASY_RIDER_GRAPHICS_CAR_H
 
 #include <QGraphicsItem>
 
 #include "board.h"
 
 
-class Car : public QGraphicsItem {
+class GraphicsCar : public QGraphicsItem {
 public:
     /**
      * Defines in which directions car can be rotated.
@@ -25,12 +25,12 @@ public:
     const Direction allDirections[4] = {UP, RIGHT, DOWN, LEFT};
 
     /**
-     * Creates Car object.
+     * Creates GraphicsCar object.
      *
      * @param board
      * @param boardPos
      */
-    Car(Board &board, QPoint boardPos);
+    GraphicsCar(Board &board, QPoint boardPos);
 
     /**
      * Used by Qt. Defines an area in which painting will take place.
@@ -57,4 +57,4 @@ private:
     bool justChangedDirection = false;
 };
 
-#endif //EASY_RIDER_CAR_H
+#endif //EASY_RIDER_GRAPHICS_CAR_H
