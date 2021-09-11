@@ -3,9 +3,22 @@
 
 #include <QGraphicsItem>
 
+#include "board.h"
 
 class Car : public QGraphicsItem {
 public:
+    enum Direction {
+        UNKNOWN,
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT,
+    };
+
+    const Direction allDirections[4] = {UP, RIGHT, DOWN, LEFT};
+
+    Car(Board board);
+
     QRectF boundingRect() const override;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -14,6 +27,10 @@ public:
 protected:
     void advance(int step) override;
 
+private:
+    Board board;
+    QPoint boardPos;
+    Direction currentDirection = UNKNOWN;
 };
 
 #endif //EASY_RIDER_CAR_H

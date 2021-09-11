@@ -4,8 +4,11 @@
 
 std::map<char, Board::Tile> tiles_map{
         {'?', Board::Tile::UNKNOWN},
+        {'^', Board::Tile::ROAD_UP},
+        {'>', Board::Tile::ROAD_RIGHT},
+        {'<', Board::Tile::ROAD_LEFT},
+        {'v', Board::Tile::ROAD_DOWN},
         {'.', Board::Tile::EMPTY},
-        {'R', Board::Tile::ROAD},
 };
 
 Board::Board(std::string str) {
@@ -52,10 +55,14 @@ int Board::getWidth() {
 }
 
 Board::Tile Board::getTile(int x, int y) {
-    if (x < width && y < height) {
+    if (x >= 0 && y >= 0 && x < width && y < height) {
         return tiles[y * width + x];
     }
     return UNKNOWN;
+}
+
+Board::Tile Board::getTile(QPoint point) {
+    return getTile(point.x(), point.y());
 }
 
 

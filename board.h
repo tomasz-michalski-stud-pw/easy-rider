@@ -1,6 +1,8 @@
 #ifndef EASY_RIDER_BOARD_H
 #define EASY_RIDER_BOARD_H
 
+#include <QPoint>
+
 #include <map>
 #include <string>
 #include <vector>
@@ -11,7 +13,10 @@ public:
     enum Tile {
         UNKNOWN,
         EMPTY,
-        ROAD,
+        ROAD_UP,
+        ROAD_RIGHT,
+        ROAD_DOWN,
+        ROAD_LEFT,
     };
 
     Board(std::string str);
@@ -21,6 +26,8 @@ public:
     int getWidth();
 
     Tile getTile(int x, int y);
+
+    Tile getTile(QPoint point);
 
 private:
     std::vector <Tile> tiles;
