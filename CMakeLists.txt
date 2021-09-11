@@ -19,6 +19,7 @@ add_executable(
         board.cpp board.h
         road_tile.cpp road_tile.h
         spawner_tile.cpp spawner_tile.h
+        consts.h
 )
 
 

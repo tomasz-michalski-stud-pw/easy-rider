@@ -8,9 +8,11 @@
 
 #include <set>
 
+#include "consts.h"
+
 
 QRectF Car::boundingRect() const {
-    return QRectF(-50, -50, 100, 100);
+    return QRectF(TILE_OFFSET, TILE_OFFSET, TILE_SIZE, TILE_SIZE);
 }
 
 void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
@@ -163,12 +165,12 @@ void Car::advance(int step) {
         justChangedDirection = true;
     }
 
-    QTimeLine *timer = new QTimeLine(1000 / 5);
+    QTimeLine *timer = new QTimeLine(SLEEP);
     QGraphicsItemAnimation *animation = new QGraphicsItemAnimation;
     animation->setItem(this);
     animation->setTimeLine(timer);
-    animation->setPosAt(0, oldBoardPos * 100);
-    animation->setPosAt(1, currentBoardPos * 100);
+    animation->setPosAt(0, oldBoardPos * TILE_SIZE);
+    animation->setPosAt(1, currentBoardPos * TILE_SIZE);
     animation->setRotationAt(0, direction_to_rotation(oldDirection));
     animation->setRotationAt(1, direction_to_rotation(currentDirection));
     timer->start();

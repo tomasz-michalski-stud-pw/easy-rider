@@ -1,6 +1,7 @@
 #include "spawner_tile.h"
 
 #include <QGraphicsScene>
+#include <QRandomGenerator>
 
 #include "car.h"
 
@@ -12,7 +13,7 @@ void SpawnerTile::advance(int step) {
     if (!step)
         return;
 
-    if (board.getCarsCount() < 10) {
+    if (board.getCarsCount() < 10 && QRandomGenerator::global()->bounded(100) < 20) {
         board.increaseCarsCount();
         scene()->addItem(new Car(board, boardPos));
     }
