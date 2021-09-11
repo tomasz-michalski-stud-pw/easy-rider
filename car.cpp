@@ -1,8 +1,10 @@
 #include "car.h"
 
+#include <QGraphicsItemAnimation>
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QRandomGenerator>
+#include <QTimeLine>
 
 #include <set>
 
@@ -88,7 +90,7 @@ QPoint direction_to_point(Car::Direction direction) {
 qreal direction_to_rotation(Car::Direction direction) {
     switch (direction) {
         case Car::Direction::UP:
-            return 0;
+            return 360;
         case Car::Direction::RIGHT:
             return 90;
         case Car::Direction::DOWN:
@@ -96,7 +98,7 @@ qreal direction_to_rotation(Car::Direction direction) {
         case Car::Direction::LEFT:
             return 270;
         default:
-            return QRandomGenerator::global()->bounded(12)*30;
+            return QRandomGenerator::global()->bounded(12) * 30;
     }
 }
 
@@ -105,56 +107,75 @@ void Car::advance(int step) {
     if (!step)
         return;
 
-    std::set <Direction> new_directions;
+    auto oldBoardPos = currentBoardPos;
+    auto oldDirection = currentDirection;
 
-    // "pulling" to the new road tile nearby which will allow to travel further
-    for (auto possible_direction : allDirections) {
-        auto possible_tile = board.getTile(boardPos + direction_to_point(possible_direction));
-        Car::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
-        if (possible_direction == possible_tile_direction
-            && !is_direction_opposite(currentDirection, possible_direction)
-            && possible_tile_direction != Car::Direction::UNKNOWN) {
-            new_directions.insert(possible_direction);
+    if (!justChangedDirection) {
+        std::set <Direction> new_directions;
+
+        // "pulling" to the new road tile nearby which will allow to travel further
+        for (auto possible_direction : allDirections) {
+            auto possible_tile = board.getTile(currentBoardPos + direction_to_point(possible_direction));
+            Car::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
+            if (possible_direction == possible_tile_direction
+                && !is_direction_opposite(currentDirection, possible_direction)
+                && possible_tile_direction != Car::Direction::UNKNOWN) {
+                new_directions.insert(possible_direction);
+            }
+        }
+
+        // "pushing" from the current road
+        {
+            Car::Direction possible_direction = direction_from_road_tile(board.getTile(currentBoardPos));
+            auto possible_tile = board.getTile(currentBoardPos + direction_to_point(possible_direction));
+            Car::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
+            if (possible_tile_direction != Car::Direction::UNKNOWN) {
+                new_directions.insert(possible_direction);
+            }
+        }
+
+        if (new_directions.size() > 0) {
+            // select random direction
+            auto it = std::begin(new_directions);
+            std::advance(it, QRandomGenerator::global()->bounded(new_directions.size()));
+            currentDirection = *it;
+        } else {
+            // car is stuck, despawn it
+            hide();
+            board.unlockTile(currentBoardPos);
+            scene()->removeItem(this);
+            board.decreaseCarsCount();
         }
     }
-
-    // "pushing" from the current road
-    {
-        Car::Direction possible_direction = direction_from_road_tile(board.getTile(boardPos));
-        auto possible_tile = board.getTile(boardPos + direction_to_point(possible_direction));
-        Car::Direction possible_tile_direction = direction_from_road_tile(possible_tile);
-        if (possible_tile_direction != Car::Direction::UNKNOWN) {
-            new_directions.insert(possible_direction);
-        }
+    if (oldDirection == UNKNOWN) {
+        oldDirection = currentDirection;
     }
 
-    if (new_directions.size() > 0) {
-        // select random direction
-        auto it = std::begin(new_directions);
-        std::advance(it, QRandomGenerator::global()->bounded(new_directions.size()));
-        currentDirection = *it;
+    if (oldDirection == currentDirection) {
+        justChangedDirection = false;
+        auto newBoardPos = currentBoardPos + direction_to_point(currentDirection);
+        if (board.lockTile(newBoardPos)) {
+            show(); // freshly spawned cars are hidden
+            board.unlockTile(currentBoardPos);
+            currentBoardPos = newBoardPos;
+        }
     } else {
-        // car is stuck, despawn it
-        hide();
-        board.unlockTile(boardPos);
-        scene()->removeItem(this);
-        board.decreaseCarsCount();
+        justChangedDirection = true;
     }
 
-    setRotation(direction_to_rotation(currentDirection));
-
-    auto newBoardPos = boardPos + direction_to_point(currentDirection);
-    if (board.lockTile(newBoardPos)) {
-        show(); // freshly spawned cars are hidden
-        board.unlockTile(boardPos);
-        boardPos = newBoardPos;
-    }
-
-    setPos(boardPos * 100);
+    QTimeLine *timer = new QTimeLine(1000 / 5);
+    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation;
+    animation->setItem(this);
+    animation->setTimeLine(timer);
+    animation->setPosAt(0, oldBoardPos * 100);
+    animation->setPosAt(1, currentBoardPos * 100);
+    animation->setRotationAt(0, direction_to_rotation(oldDirection));
+    animation->setRotationAt(1, direction_to_rotation(currentDirection));
+    timer->start();
 }
 
 
-Car::Car(Board &board, QPoint boardPos) : board(board), boardPos(boardPos) {
+Car::Car(Board &board, QPoint boardPos) : board(board), currentBoardPos(boardPos) {
     hide(); // hide car until first move because it may be initially blocked at spawn point
     advance(1);
 }

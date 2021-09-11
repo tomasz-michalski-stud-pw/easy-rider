@@ -30,8 +30,9 @@ protected:
 
 private:
     Board &board;
-    QPoint boardPos;
+    QPoint currentBoardPos;
     Direction currentDirection = UNKNOWN;
+    bool justChangedDirection = false;
 };
 
 #endif //EASY_RIDER_CAR_H
