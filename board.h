@@ -36,11 +36,16 @@ public:
 
     int getCarsCount();
 
+    bool lockTile(QPoint point);
+
+    void unlockTile(QPoint point);
+
 private:
     std::vector <Tile> tiles;
     int width = 0;
     int height = 0;
     int carsCount = 0;
+    std::vector <QPoint> tilesLocks;
 };
 
 

@@ -1,5 +1,6 @@
 #include "board.h"
 
+#include <algorithm>
 #include <sstream>
 
 std::map<char, Board::Tile> tiles_map{
@@ -76,6 +77,18 @@ void Board::decreaseCarsCount() {
 
 int Board::getCarsCount() {
     return carsCount;
+}
+
+bool Board::lockTile(QPoint point) {
+    if (std::find(tilesLocks.begin(), tilesLocks.end(), point) != tilesLocks.end()) {
+        return false;
+    }
+    tilesLocks.push_back(point);
+    return true;
+}
+
+void Board::unlockTile(QPoint point) {
+    tilesLocks.erase(std::remove(tilesLocks.begin(), tilesLocks.end(), point), tilesLocks.end());
 }
 
 

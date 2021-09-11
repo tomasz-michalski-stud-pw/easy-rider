@@ -136,16 +136,25 @@ void Car::advance(int step) {
     } else {
         // car is stuck, despawn it
         hide();
+        board.unlockTile(boardPos);
         scene()->removeItem(this);
         board.decreaseCarsCount();
     }
 
     setRotation(direction_to_rotation(currentDirection));
-    boardPos += direction_to_point(currentDirection);
+
+    auto newBoardPos = boardPos + direction_to_point(currentDirection);
+    if (board.lockTile(newBoardPos)) {
+        show(); // freshly spawned cars are hidden
+        board.unlockTile(boardPos);
+        boardPos = newBoardPos;
+    }
+
     setPos(boardPos * 100);
 }
 
 
 Car::Car(Board &board, QPoint boardPos) : board(board), boardPos(boardPos) {
+    hide(); // hide car until first move because it may be initially blocked at spawn point
     advance(1);
 }
