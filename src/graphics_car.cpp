@@ -110,6 +110,18 @@ qreal direction_to_rotation(GraphicsCar::Direction direction) {
     }
 }
 
+qreal direction_to_new_rotation(GraphicsCar::Direction oldDirection, GraphicsCar::Direction newDirection) {
+    qreal new_angle = direction_to_rotation(newDirection);
+    qreal difference = new_angle - direction_to_rotation(oldDirection);
+    if (difference > 180) {
+        new_angle -= 360;
+    }
+    if (difference < -180) {
+        new_angle += 360;
+    }
+    return new_angle;
+}
+
 
 void GraphicsCar::advance(int step) {
     if (!step)
@@ -178,6 +190,6 @@ void GraphicsCar::advance(int step) {
     animation->setPosAt(0, oldBoardPos * TILE_SIZE);
     animation->setPosAt(1, currentBoardPos * TILE_SIZE);
     animation->setRotationAt(0, direction_to_rotation(oldDirection));
-    animation->setRotationAt(1, direction_to_rotation(currentDirection));
+    animation->setRotationAt(1, direction_to_new_rotation(oldDirection, currentDirection));
     timer->start();
 }
